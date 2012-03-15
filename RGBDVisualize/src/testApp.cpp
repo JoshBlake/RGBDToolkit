@@ -677,7 +677,7 @@ bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
 			depthImageDirectory = dataDirectory.getPath(i);
 		}
 		
-		if(testFile.find("mov") != string::npos){
+		if(testFile.find("mov") != string::npos || testFile.find("MOV") != string::npos ){
 			if(testFile.find("small") == string::npos){
 				videoPath = dataDirectory.getPath(i);
 			}
@@ -710,7 +710,6 @@ bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
 	
 	if(pairingsFile == ""){
 		pairingsFile = ofFilePath::removeExt(smallVideoPath) + "_pairings.xml";
-//		cout << "forcing pairs file to " << pairingsFile << endl;
 	}
 	
 	if(!loadAlignmentMatrices(calibrationDirectory)){

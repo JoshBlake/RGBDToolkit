@@ -24,6 +24,15 @@ void testApp::setup(){
 	cameraTrack.setCamera(cam);
 	cam.loadCameraPosition();
 	
+	currentSimplify = 2;
+	lineSize = 1;
+	pointSize = 1;
+	
+	farClip = 5000;
+	videoInPercent = 0.0;
+	videoOutPercent = 1.0;
+	enableVideoInOut = false;
+	
 	hiResPlayer = NULL;
 	lowResPlayer = NULL;
 	startRenderMode = false;
@@ -164,24 +173,30 @@ void testApp::drawGeometry(){
 	//***************************************************
 	
 	if(drawPointcloud){
+		ofPushStyle();
 		glPointSize(pointSize);
 		renderer.drawPointCloud();
+		ofPopStyle();
 	}
 	
 	if(drawWireframe){
+		ofPushStyle();
 		glLineWidth(lineSize);
 		renderer.drawWireFrame();
+		ofPopStyle();
 	}
 	
 	if(drawMesh){
+		ofPushStyle();
 		renderer.drawMesh();
+		ofPopStyle();
 	}	
 
-	for(int i = 0; i < 200; i++){
-		ofNode n;
-		n.setPosition(ofVec3f(ofRandom(-200,200),ofRandom(-200,200),ofRandom(-200,200)));
-		//n.draw();
-	}
+//	for(int i = 0; i < 200; i++){
+//		ofNode n;
+//		n.setPosition(ofVec3f(ofRandom(-200,200),ofRandom(-200,200),ofRandom(-200,200)));
+//		n.draw();
+//	}
 }
 
 //************************************************************
@@ -283,6 +298,16 @@ void testApp::update(){
 	
 	if(!allLoaded) return;
 	
+	//if we don't have good pairings, force pages on timeline + gui
+	if(!alignmentScrubber.ready()){
+		videoTimelineElement.setInFrame(0);
+		videoTimelineElement.setOutFrame(lowResPlayer->getTotalNumFrames());
+		gui.setPage(3);
+		timeline.setCurrentPage(1);
+		farClip = 5000;
+	}
+	
+	
 	if(currentLockCamera != cameraTrack.lockCameraToTrack){
 		if(!currentLockCamera){
 			cam.targetNode.setPosition(cam.getPosition());
@@ -376,11 +401,11 @@ void testApp::update(){
 	
 	if(!currentlyRendering){
 		lowResPlayer->update();	
-		if(!temporalAlignmentMode && lowResPlayer->isFrameNew()){		
+		if(!temporalAlignmentMode && lowResPlayer->isFrameNew()){
 			updateRenderer(*lowResPlayer);
 		}
-		
-		if(temporalAlignmentMode && currentDepthFrame != depthSequence.getSelectedFrame()){
+		//cout << "timeline is " << videoTimelineElement.getSelectedFrame() << " and player is " << lowResPlayer->getCurrentFrame() << endl;; 
+		if(temporalAlignmentMode && (currentDepthFrame != depthSequence.getSelectedFrame())){
 			updateRenderer(*lowResPlayer);
 		}
 		
@@ -398,7 +423,7 @@ void testApp::update(){
 	if(shouldClearCameraMoves){
 		cameraTrack.getCameraTrack().reset();
 		shouldClearCameraMoves = false;
-	}
+	}	
 	
 	if(shouldSaveCameraPoint){
 		//cameraRecorder.sample(lowResPlayer->getCurrentFrame());
@@ -466,14 +491,14 @@ void testApp::updateRenderer(ofVideoPlayer& fromPlayer){
 			depthSequence.selectFrame(currentDepthFrame);
 		}
 		renderer.setDepthImage(depthPixelDecodeBuffer);
-
 	}
-	
-	
+	else{
+		lowResPlayer->setFrame(videoTimelineElement.getSelectedFrame());
+		renderer.setDepthImage(depthSequence.currentDepthRaw);
+	}
+
 	processDepthFrame();
-	
 	renderer.update();
-	
 	processGeometry();
 	
 	if(!drawPointcloud && !drawWireframe && !drawMesh){
@@ -584,7 +609,6 @@ void testApp::draw(){
 		}
 		ofPopStyle();
 	}
-	
 }
 
 
@@ -624,7 +648,7 @@ bool testApp::loadNewProject(){
 }
 
 bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
-	cout << "loading media folder " << currentMediaFolder << endl;
+//	cout << "loading media folder " << currentMediaFolder << endl;
 	
 	if(!playerElementAdded){
 		populateTimelineElements();
@@ -641,10 +665,9 @@ bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
 	string videoPath = "";
 	string smallVideoPath = "";
 	string depthImageDirectory = "";
-	string pairingsFile = "";
+	pairingsFile = "";
 	
 	for(int i = 0; i < numFiles; i++){
-		cout << "testin file " << dataDirectory.getName(i) << endl;
 		string testFile = dataDirectory.getName(i);
 		if(testFile.find("calibration") != string::npos){
 			calibrationDirectory = dataDirectory.getPath(i);
@@ -686,7 +709,8 @@ bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
 	
 	
 	if(pairingsFile == ""){
-		pairingsFile = currentCompositionDirectory + ofFilePath::removeExt(smallVideoPath) + "pairings.xml";
+		pairingsFile = ofFilePath::removeExt(smallVideoPath) + "_pairings.xml";
+//		cout << "forcing pairs file to " << pairingsFile << endl;
 	}
 	
 	if(!loadAlignmentMatrices(calibrationDirectory)){
@@ -700,7 +724,7 @@ bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
 	}
 	
 	if(!loadDepthSequence(depthImageDirectory)){
-		ofSystemAlertDialog("Load Failed -- Couldn't load dpeth iamges.");
+		ofSystemAlertDialog("Load Failed -- Couldn't load depth iamges.");
 		return false;
 	}
 	
@@ -722,7 +746,8 @@ bool testApp::loadDepthSequence(string path){
 	depthSequence.setup();
 	
 	depthPixelDecodeBuffer = depthSequence.currentDepthRaw;
-
+	renderer.setDepthImage(depthPixelDecodeBuffer);
+	
 	return depthSequence.loadSequence(path);
 }
 
@@ -753,7 +778,6 @@ bool testApp::loadVideoFile(string hiResPath, string lowResPath){
 		return false;		
 	}
 	
-	
 	if(hasHiresVideo){
 		renderer.setTextureScale(1.0*lowResPlayer->getWidth()/hiResPlayer->getWidth(), 
 								 1.0*lowResPlayer->getHeight()/hiResPlayer->getHeight());
@@ -773,7 +797,9 @@ bool testApp::loadVideoFile(string hiResPath, string lowResPath){
 		ofDirectory(videoThumbsPath).create(true);
 	}
 	videoTimelineElement.setup();	
-//	timeline.setDurationInFrames(lowResPlayer->getTotalNumFrames());
+	if(!enableVideoInOut){
+		timeline.setDurationInFrames(lowResPlayer->getTotalNumFrames());
+	}
 	videoTimelineElement.setVideoPlayer(*lowResPlayer, videoThumbsPath);
 	lowResPlayer->play();
 	lowResPlayer->setSpeed(0);
@@ -822,7 +848,7 @@ bool testApp::loadAlignmentMatrices(string path){
 
 //--------------------------------------------------------------
 void testApp::loadCompositions(){
-	ofSystemAlertDialog("Select the MediaBin containing everyone's names");
+	ofSystemAlertDialog("Select the MediaBin");
 
 	ofFileDialogResult r = ofSystemLoadDialog("Select Media Bin", true);
 	if(r.bSuccess){
@@ -1005,6 +1031,13 @@ bool testApp::loadCompositionAtIndex(int i){
 	videoOutPercent = projectsettings.getValue("videoout", 1.);
 	renderer.rotateMeshX = projectsettings.getValue("xrot", 0);
 	
+	//error condition for corrupted comps
+	if(currentDuration <= 0){
+		currentDuration = lowResPlayer->getTotalNumFrames();
+	}
+	if(farClip <= 0){
+		farClip = 5000;
+	}
 	shouldResetDuration = true;
 	
 	//set keyframer files based on comp

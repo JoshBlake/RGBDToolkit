@@ -8,27 +8,18 @@ void testApp::setup(){
 
 	ofEnableAlphaBlending();
 	ofSetFrameRate(60);
-	//ofToggleFullscreen();
-	
-	//ofBackground(255*.2);
 	ofBackground(255*0);
 	
-//	cameraFound =  recordContext.setup();	// all nodes created by code -> NOT using the xml config file at all
-//	cameraFound &= recordDepth.setup(&recordContext);
-//	cameraFound &= recordImage.setup(&recordContext);
-	if(!cameraFound){
-		ofLogError() << "RECORDER --- Camera not found";
-	}
+	depthImageProvider = new ofxDepthImageProviderFreenect();
+	depthImageProvider->setup();
+	
 	
 	fullscreenPoints = false;
-//	inCaptureMode = false;
-//	clicks = 0;
-//	lastClickTime = 0;
 	
 	currentTab = TabCalibrate;
 
-	downColor = ofColor(255, 120, 0);
-	idleColor = ofColor(220, 200, 200);
+	downColor  = ofColor(255, 120, 0);
+	idleColor  = ofColor(220, 200, 200);
 	hoverColor = ofColor(255*.2, 255*.2, 30*.2);
 	
 	//setup buttons
@@ -141,9 +132,6 @@ void testApp::setup(){
 		
 	flip = false;
 	
-	//depthImageProvider = new ofxDepthImageProviderOpenNI();
-	depthImageProvider = new ofxDepthImageProviderFreenect();
-	depthImageProvider->setup();
 }
 
 
@@ -261,8 +249,6 @@ void testApp::toggleRecord(){
 
 //--------------------------------------------------------------
 void testApp::captureCalibrationImage(){
-//	if(recordImage.getIRPixels() != NULL){
-//	calibrationImage.setFromPixels(recordImage.getIRPixels(), 640, 480, OF_IMAGE_GRAYSCALE);
 	char filename[1024];
 	sprintf(filename, "%s/calibration/calibration_image_%02d_%02d_%02d_%02d_%02d.png", workingDirectory.c_str(), ofGetMonth(), ofGetDay(), ofGetHours(), ofGetMinutes(), ofGetSeconds());
 	//jg conv ofSaveImage( calibrationImage, filename);
@@ -270,8 +256,6 @@ void testApp::captureCalibrationImage(){
 	alignment.addDepthCalibrationImage(filename);
 	alignment.generateAlignment();
 	alignment.saveState();
-	
-//	}
 }
 
 //--------------------------------------------------------------
@@ -287,7 +271,6 @@ void testApp::updateTakeButtons(){
 		ofxMSAInteractiveObjectWithDelegate* btnTake = new ofxMSAInteractiveObjectWithDelegate();		
 		float x = framewidth;
 		float y = btnheight/2*i;
-//		cout << "y is " << btnheight/2*i << " limit is " << btnheight*3+frameheight << endl;
 		while(y >= btnheight*3+frameheight){
 			y -= btnheight*3+frameheight;
 			x += thirdWidth;
@@ -463,6 +446,7 @@ void testApp::keyPressed(int key){
 }
 
 void testApp::exit() {
+	recorder.shutdown();
 	depthImageProvider->close();
 }
 

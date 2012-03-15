@@ -84,6 +84,7 @@ class testApp : public ofBaseApp, public ofxMSAInteractiveObjectDelegate {
 	int currentCompIndex;
 	string currentCompositionDirectory;
 	string mediaBinDirectory;
+	string pairingsFile;
 	ofVideoPlayer* hiResPlayer;
 	ofVideoPlayer* lowResPlayer;
 		

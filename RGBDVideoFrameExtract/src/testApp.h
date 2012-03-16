@@ -19,8 +19,10 @@ class testApp : public ofBaseApp{
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
+
 	ofDirectory movieDirectory;
 	int currentMovie;
+	vector<bool> frameExtracted;
 	vector<ofVideoPlayer> videoplayers;
 	bool moviesLoaded;
 };

@@ -11,13 +11,16 @@ void testApp::setup(){
 		movieDirectory.allowExt("mov");
 		movieDirectory.allowExt("mp4");
 		movieDirectory.listDir();
-		for(int i = 0; i < movieDirectory.numFiles(); i++){
-			ofVideoPlayer p;
-			p.loadMovie( movieDirectory.getPath(i) );
-			videoplayers.push_back( p );
+		if(movieDirectory.numFiles() > 0){
+			for(int i = 0; i < movieDirectory.numFiles(); i++){
+				ofVideoPlayer p;
+				p.loadMovie( movieDirectory.getPath(i) );
+				videoplayers.push_back( p );
+				frameExtracted.push_back( false );
+			}
+			currentMovie = 0;
+			moviesLoaded = true;
 		}
-		currentMovie = 0;
-		moviesLoaded = true;
 	}
 }
 
@@ -51,9 +54,12 @@ void testApp::draw(){
 			drawRect.x = screenRect.x;
 			drawRect.y = screenRect.y + screenRect.height / 2 - drawRect.height / 2;
 		}
-		
+		ofPushStyle();
+		if(frameExtracted[currentMovie]){
+			ofSetColor(180, 255, 180); //green tint
+		}
 		videoplayers[currentMovie].draw(drawRect);
-		
+		ofPopStyle();
 		ofDrawBitmapString("Movie #"+ofToString(currentMovie+1) + " " + movieDirectory.getPath(currentMovie), 10, ofGetHeight()-30);
 	}
 	else{
@@ -81,6 +87,7 @@ void testApp::keyPressed(int key){
 		ofImage frame;
 		frame.setFromPixels(videoplayers[currentMovie].getPixelsRef());
 		frame.saveImage(ofFilePath::removeExt(movieDirectory.getPath(currentMovie)) + "_calib.png");
+		frameExtracted[currentMovie] = true;
 	}
 }
 

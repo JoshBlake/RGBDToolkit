@@ -785,7 +785,7 @@ bool testApp::loadVideoFile(string hiResPath, string lowResPath){
 
 		float fullsizedWidth  = renderer.getRGBCalibration().getDistortedIntrinsics().getImageSize().width;
 		float fullsizedHeight = renderer.getRGBCalibration().getDistortedIntrinsics().getImageSize().height; 
-		cout << "image size is " << fullsizedWidth << " " << fullsizedHeight << endl;
+//		cout << "image size is " << fullsizedWidth << " " << fullsizedHeight << endl;
 		renderer.setTextureScale(1.0*lowResPlayer->getWidth()/fullsizedWidth, 
 								 1.0*lowResPlayer->getHeight()/fullsizedHeight);
 	}

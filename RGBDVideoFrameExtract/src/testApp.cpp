@@ -33,8 +33,28 @@ void testApp::update(){
 void testApp::draw(){
 	ofBackground(0);
 	if(moviesLoaded){
-		videoplayers[currentMovie].draw(0,0);
-		ofDrawBitmapString("Movie #"+ofToString(currentMovie+1) + " " + movieDirectory.getPath(currentMovie), 10, videoplayers[currentMovie].getHeight() + 10);
+		//calculate a letterboxed preview rectangle based on the source rect compared to the preview rect
+		ofRectangle drawRect;
+		ofRectangle screenRect = ofRectangle(0,0, ofGetWidth(), ofGetHeight());
+		ofRectangle sourceRect = ofRectangle(0,0, videoplayers[currentMovie].getWidth(), videoplayers[currentMovie].getHeight() );
+		float screenAspect = screenRect.width/screenRect.height;
+		float sourceAspect = sourceRect.width/sourceRect.height;
+		if (sourceAspect < screenAspect) {
+			drawRect.height = screenRect.height;
+			drawRect.width = drawRect.height * sourceAspect;
+			drawRect.y = screenRect.y;
+			drawRect.x = screenRect.x + screenRect.width / 2 - drawRect.width / 2;
+		}
+		else{
+			drawRect.width = screenRect.width;
+			drawRect.height = drawRect.width / sourceAspect;
+			drawRect.x = screenRect.x;
+			drawRect.y = screenRect.y + screenRect.height / 2 - drawRect.height / 2;
+		}
+		
+		videoplayers[currentMovie].draw(drawRect);
+		
+		ofDrawBitmapString("Movie #"+ofToString(currentMovie+1) + " " + movieDirectory.getPath(currentMovie), 10, ofGetHeight()-30);
 	}
 	else{
 		ofSetColor(255);
@@ -45,14 +65,12 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
 	if(key == OF_KEY_LEFT){
-		//videoplayer.close();
 		currentMovie--;
 		if(currentMovie < 0){
 			currentMovie = movieDirectory.numFiles()-1;
 		}		
 	}
 	else if(key == OF_KEY_RIGHT){
-		//videoplayer.close();
 		currentMovie++;
 		if(currentMovie == movieDirectory.numFiles()){
 			currentMovie = 0;

@@ -13,7 +13,7 @@ void testApp::setup(){
 	depthImageProvider = new ofxDepthImageProviderFreenect();
 	depthImageProvider->setup();
 	
-	
+		
 	fullscreenPoints = false;
 	
 	currentTab = TabCalibrate;

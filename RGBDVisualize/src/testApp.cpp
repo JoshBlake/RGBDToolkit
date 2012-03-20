@@ -673,7 +673,7 @@ bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
 			calibrationDirectory = dataDirectory.getPath(i);
 		}
 		
-		if(testFile.find("depth") != string::npos){
+		if(testFile.find("depth") != string::npos || testFile.find("TAKE") != string::npos){
 			depthImageDirectory = dataDirectory.getPath(i);
 		}
 		
@@ -711,9 +711,9 @@ bool testApp::loadAssetsFromCompositionDirectory(string currentMediaFolder) {
 	if(pairingsFile == ""){
 		pairingsFile = ofFilePath::removeExt(smallVideoPath) + "_pairings.xml";
 	}
-	
+	cout << "********** frameExtracted " << calibrationDirectory << endl;
 	if(!loadAlignmentMatrices(calibrationDirectory)){
-		ofSystemAlertDialog("Load Failed -- Couldn't Load Calibration Direcotry.");
+		ofSystemAlertDialog("Load Failed -- Couldn't Load Calibration Directory.");
 		return false;
 	}
 	

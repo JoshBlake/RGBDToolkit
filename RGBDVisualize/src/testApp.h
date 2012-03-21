@@ -84,6 +84,7 @@ class testApp : public ofBaseApp, public ofxMSAInteractiveObjectDelegate {
 	int currentCompIndex;
 	string currentCompositionDirectory;
 	string mediaBinDirectory;
+	string pairingsFile;
 	ofVideoPlayer* hiResPlayer;
 	ofVideoPlayer* lowResPlayer;
 		
@@ -99,17 +100,8 @@ class testApp : public ofBaseApp, public ofxMSAInteractiveObjectDelegate {
 
 	ofxGameCamera cam;
 	ofxTLCameraTrack cameraTrack;
-//	ofxCameraTrack cameraRecorder;
 	bool sampleCamera;
-//	bool playbackCamera;
-
-	
-//	string videoThumbsPath;
-//	string videoPath;
-//	string smallVideoPath;
-	
 	ofxRGBDRenderer renderer;
-//	ofxRGBDVideoDepthSequence sequencer;
 	
 	ofxTimeline timeline;
 	ofxTLVideoPlayer videoTimelineElement;

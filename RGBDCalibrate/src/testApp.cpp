@@ -68,14 +68,6 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-	if(alignment.ready()){
-		if(alignment.getCurrentRGBImage().isAllocated()){
-			imitate(undistortionTest, alignment.getCurrentRGBImage());
-			Calibration& calib = alignment.getDepthCalibration();
-			calib.undistort(toCv(alignment.getCurrentRGBImage()), toCv(undistortionTest));
-			undistortionTest.update();
-		}
-	}
 }
 
 //--------------------------------------------------------------
@@ -83,11 +75,6 @@ void testApp::draw(){
 	ofBackground(0);
 	ofSetColor(255);
 	alignment.drawGui();
-	if(undistortionTest.isAllocated()){
-		alignment.getCurrentRGBImage().draw(0, 300,320,240);
-		alignment.getCurrentDepthImage().draw(320, 300, 320,240);
-		undistortionTest.draw(640,300,320,240);
-	}
 }
 
 //--------------------------------------------------------------
@@ -96,7 +83,7 @@ void testApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
-	if(key == OF_KEY_DEL){
+	if(key == OF_KEY_DEL || key == OF_KEY_BACKSPACE){
 		alignment.discardCurrentPair();
 		alignment.saveState();
 	}

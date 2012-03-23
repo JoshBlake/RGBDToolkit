@@ -46,6 +46,7 @@
 		A638C753149439F90060809C /* ofxTween.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A638C741149439F90060809C /* ofxTween.cpp */; };
 		A638C7AF14943A270060809C /* ofxTextInputField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A638C7AD14943A270060809C /* ofxTextInputField.cpp */; };
 		A6477C71149D678500908B2B /* ofxRGBDAlignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A6477C6F149D678500908B2B /* ofxRGBDAlignment.cpp */; };
+		A6AC3642151A6CE500C55DB6 /* ofxDepthImageProviderFreenect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A6AC3640151A6CE500C55DB6 /* ofxDepthImageProviderFreenect.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -75,7 +76,6 @@
 		E77D88F81497D6A200713F52 /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E77D88ED1497D6A200713F52 /* opencv.a */; };
 		E78D615F149A8784004806BF /* ofxGameCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E78D615B149A8784004806BF /* ofxGameCamera.cpp */; };
 		E790F90E15101FB600157AAC /* ofxDepthImageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E790F90D15101FB600157AAC /* ofxDepthImageProvider.cpp */; };
-		E790F9141510204900157AAC /* ofxDepthImageProviderFreenect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E790F9131510204900157AAC /* ofxDepthImageProviderFreenect.cpp */; };
 		E790FB0E1510FA2C00157AAC /* APACHE20 in Resources */ = {isa = PBXBuildFile; fileRef = E790FA711510FA2B00157AAC /* APACHE20 */; };
 		E790FB0F1510FA2C00157AAC /* cameras.c in Sources */ = {isa = PBXBuildFile; fileRef = E790FA721510FA2B00157AAC /* cameras.c */; };
 		E790FB101510FA2C00157AAC /* CONTRIB in Resources */ = {isa = PBXBuildFile; fileRef = E790FA741510FA2B00157AAC /* CONTRIB */; };
@@ -237,6 +237,8 @@
 		A638C7AE14943A270060809C /* ofxTextInputField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTextInputField.h; sourceTree = "<group>"; };
 		A6477C6F149D678500908B2B /* ofxRGBDAlignment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxRGBDAlignment.cpp; sourceTree = "<group>"; };
 		A6477C70149D678500908B2B /* ofxRGBDAlignment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxRGBDAlignment.h; sourceTree = "<group>"; };
+		A6AC3640151A6CE500C55DB6 /* ofxDepthImageProviderFreenect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxDepthImageProviderFreenect.cpp; path = ofxKinect/ofxDepthImageProviderFreenect.cpp; sourceTree = "<group>"; };
+		A6AC3641151A6CE500C55DB6 /* ofxDepthImageProviderFreenect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxDepthImageProviderFreenect.h; path = ofxKinect/ofxDepthImageProviderFreenect.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -349,8 +351,6 @@
 		E78D615C149A8784004806BF /* ofxGameCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxGameCamera.h; sourceTree = "<group>"; };
 		E790F90C15101FB600157AAC /* ofxDepthImageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxDepthImageProvider.h; sourceTree = "<group>"; };
 		E790F90D15101FB600157AAC /* ofxDepthImageProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxDepthImageProvider.cpp; sourceTree = "<group>"; };
-		E790F9121510204900157AAC /* ofxDepthImageProviderFreenect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxDepthImageProviderFreenect.h; sourceTree = "<group>"; };
-		E790F9131510204900157AAC /* ofxDepthImageProviderFreenect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxDepthImageProviderFreenect.cpp; sourceTree = "<group>"; };
 		E790FA711510FA2B00157AAC /* APACHE20 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = APACHE20; sourceTree = "<group>"; };
 		E790FA721510FA2B00157AAC /* cameras.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cameras.c; sourceTree = "<group>"; };
 		E790FA731510FA2B00157AAC /* cameras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cameras.h; sourceTree = "<group>"; };
@@ -1069,8 +1069,8 @@
 		E790F90A15101FA000157AAC /* ofxKinect */ = {
 			isa = PBXGroup;
 			children = (
-				E790F9121510204900157AAC /* ofxDepthImageProviderFreenect.h */,
-				E790F9131510204900157AAC /* ofxDepthImageProviderFreenect.cpp */,
+				A6AC3640151A6CE500C55DB6 /* ofxDepthImageProviderFreenect.cpp */,
+				A6AC3641151A6CE500C55DB6 /* ofxDepthImageProviderFreenect.h */,
 			);
 			name = ofxKinect;
 			sourceTree = "<group>";
@@ -1562,13 +1562,13 @@
 				A6477C71149D678500908B2B /* ofxRGBDAlignment.cpp in Sources */,
 				E71EB42914A17E7400D23DE5 /* ofxDepthImageCompressor.cpp in Sources */,
 				E790F90E15101FB600157AAC /* ofxDepthImageProvider.cpp in Sources */,
-				E790F9141510204900157AAC /* ofxDepthImageProviderFreenect.cpp in Sources */,
 				E790FB0F1510FA2C00157AAC /* cameras.c in Sources */,
 				E790FB111510FA2C00157AAC /* core.c in Sources */,
 				E790FB161510FA2C00157AAC /* registration.c in Sources */,
 				E790FB171510FA2C00157AAC /* tilt.c in Sources */,
 				E790FB181510FA2C00157AAC /* usb_libusb10.c in Sources */,
 				E790FB3A1510FA2C00157AAC /* ofxKinect.cpp in Sources */,
+				A6AC3642151A6CE500C55DB6 /* ofxDepthImageProviderFreenect.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -79,8 +79,10 @@ void testApp::setup(){
 	gui.addToggle("Draw Pointcloud", drawPointcloud);
 	gui.addToggle("Draw Wireframe", drawWireframe);
 	gui.addToggle("Draw Mesh", drawMesh);
-	gui.addSlider("Point Size", pointSize, 1, 10);
-	gui.addSlider("Line Thickness", lineSize, 1, 10);
+	gui.addSlider("Point Size", currentPointSize, 0, 20);
+	gui.addSlider("Line Thickness", currentLineSize, 0, 20);
+	
+	gui.addToggle("Lock render mode to track", currentLockRenderMode);
 	gui.addSlider("Edge Cull", currentEdgeCull, 1, 500);
 	gui.addSlider("Z Far Clip", farClip, 2, 5000);
 	gui.addSlider("Simplify", currentSimplify, 1, 8);
@@ -123,6 +125,8 @@ void testApp::setup(){
 	
 	currentLockCamera = false;
 	cameraTrack.lockCameraToTrack = false;
+	videoTimelineElement.toggleThumbs();
+	depthSequence.toggleThumbs();
 }
 
 #pragma mark customization
@@ -172,14 +176,14 @@ void testApp::drawGeometry(){
 	//*
 	//***************************************************
 	
-	if(drawPointcloud){
+	if(drawPointcloud && pointSize > 0){
 		ofPushStyle();
 		glPointSize(pointSize);
 		renderer.drawPointCloud();
 		ofPopStyle();
 	}
 	
-	if(drawWireframe){
+	if(drawWireframe && lineSize > 0){
 		ofPushStyle();
 		glLineWidth(lineSize);
 		renderer.drawWireFrame();
@@ -307,6 +311,16 @@ void testApp::update(){
 		farClip = 5000;
 	}
 	
+	if(currentLockRenderMode)
+	{
+		pointSize = timeline.getKeyframeValue("Point Render Mode");
+		lineSize = timeline.getKeyframeValue("Line Render Mode");
+	}
+	else
+	{
+		pointSize = currentPointSize;
+		lineSize = currentLineSize;
+	}
 	
 	if(currentLockCamera != cameraTrack.lockCameraToTrack){
 		if(!currentLockCamera){
@@ -814,6 +828,10 @@ void testApp::populateTimelineElements(){
 	timeline.addElement("Video", &videoTimelineElement);
 	timeline.addKeyframes("White", currentCompositionDirectory + "white.xml", ofRange(0,1.0) );
 	
+	timeline.addKeyframes("Point Render Mode", currentCompositionDirectory + "pointRenderMode.xml", ofRange(0,20.0) );
+	
+	timeline.addKeyframes("Line Render Mode", currentCompositionDirectory + "lineRenderMode.xml", ofRange(0,20.0) );
+	
 	timeline.addPage("Alignment", true);
 	timeline.addElement("Video", &videoTimelineElement);
 	timeline.addElement("Depth Sequence", &depthSequence);
@@ -832,9 +850,26 @@ void testApp::loadTimelineFromCurrentComp(){
 	alignmentScrubber.depthSequence = &depthSequence;
 	
 	ofxTLKeyframer* white = (ofxTLKeyframer*)timeline.getElement("White");
-	white->setXMLFileName( currentCompositionDirectory + "white.xml");
-	white->load();	
-	
+	if (white != NULL)
+	{
+		white->setXMLFileName( currentCompositionDirectory + "white.xml");
+		white->load();	
+	}
+
+	ofxTLKeyframer* pointRenderMode = (ofxTLKeyframer*)timeline.getElement("PointRenderMode");
+	if (pointRenderMode != NULL)
+	{
+		pointRenderMode->setXMLFileName( currentCompositionDirectory + "pointRenderMode.xml");
+		pointRenderMode->load();
+	}
+
+	ofxTLKeyframer* lineRenderMode = (ofxTLKeyframer*)timeline.getElement("LineRenderMode");
+	if (lineRenderMode != NULL)
+	{
+		lineRenderMode->setXMLFileName( currentCompositionDirectory + "lineRenderMode.xml");
+		lineRenderMode->load();
+	}
+
 	string cameraSaveFile = currentCompositionDirectory + "camera.xml";
 	cameraTrack.setXMLFileName(cameraSaveFile);
 	cameraTrack.setup();	
@@ -847,13 +882,20 @@ bool testApp::loadAlignmentMatrices(string path){
 
 //--------------------------------------------------------------
 void testApp::loadCompositions(){
+#ifdef TARGET_OSX
 	ofSystemAlertDialog("Select the MediaBin");
-
 	ofFileDialogResult r = ofSystemLoadDialog("Select Media Bin", true);
 	if(r.bSuccess){
 		mediaBinDirectory = r.getPath();
 		refreshCompButtons();
 	}
+#endif
+
+#ifdef TARGET_WIN32
+	//Josh Blake's directory.
+	mediaBinDirectory = "C:\\Users\\admin\\Documents\\pointcloudapp\\MediaBin";
+	refreshCompButtons();
+#endif
 }
 
 //--------------------------------------------------------------

@@ -147,6 +147,11 @@ class testApp : public ofBaseApp, public ofxMSAInteractiveObjectDelegate {
 	bool drawMesh;
 	int pointSize;
 	int lineSize;
+
+	bool currentLockRenderMode;
+	
+	int currentPointSize;
+	int currentLineSize;
 	int currentSimplify;
 
 	bool hasHiresVideo;

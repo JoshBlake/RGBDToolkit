@@ -13,6 +13,9 @@
 #include "ofxSimpleGuiToo.h"
 #include "ofxTLCameraTrack.h"
 
+#include "NBSolver.h"
+#include<map>
+
 typedef struct {
 	ofxMSAInteractiveObjectWithDelegate* load;
 	ofxMSAInteractiveObjectWithDelegate* toggle;
@@ -57,12 +60,21 @@ class testApp : public ofBaseApp, public ofxMSAInteractiveObjectDelegate {
 	bool loadCompositionAtIndex(int i);
 	bool loadAssetsFromCompositionDirectory(string mediaPath);
 	void refreshCompButtons();
-	
+	void InitBodies();
+
 	//MSA Object delegate
 	ofxMSAInteractiveObjectWithDelegate* newCompButton;
 	ofxMSAInteractiveObjectWithDelegate* saveCompButton;	
 	vector<Comp*> comps;
 	
+	bool isNBInitialized;
+	NBSolver* nb;
+	double avgx, avgy, avgz;
+	map<int, int> nbmap;
+	typedef pair<ofIndexType, int> Int_Pair;
+	
+	bool isNBRendering, currentIsNBRendering;
+
 	bool playerElementAdded;
 	
  	void objectDidRollOver(ofxMSAInteractiveObject* object, int x, int y);

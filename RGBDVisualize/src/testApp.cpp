@@ -2,7 +2,11 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
+	nb = new NBSolver();
+	isNBInitialized = false;
 	
+	nb->SetResolution(100000, 9999999);
+
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 	ofEnableAlphaBlending();
@@ -110,6 +114,8 @@ void testApp::setup(){
 	gui.addPage("Batching");
 	gui.addToggle("View Comps", viewComps);
 	gui.addToggle("Render Batch", startRenderMode);
+	
+	gui.addToggle("Render N-Body", currentIsNBRendering);
 
 	gui.loadFromXML();
 	gui.toggleDraw();
@@ -165,6 +171,108 @@ void testApp::processGeometry(){
 //		renderer.getMesh().getVertices()[i].z += sin(i/30.0 + timeline.getCurrentFrame())*25;
 //	}
 	
+
+	if ((currentIsNBRendering & !isNBRendering))
+	{
+		InitBodies();
+	}
+	isNBRendering = currentIsNBRendering;
+
+	if (isNBRendering)
+	{
+		nb->RunLoop(10);
+
+		map<int, int>::iterator iter;
+		
+		int numVertices = renderer.getMesh().getVertices().size();
+		vector<ofVec3f> vertices = renderer.getMesh().getVertices();
+
+		for(iter = nbmap.begin(); iter != nbmap.end(); iter++)
+		{
+			int i = iter->first;
+			int vi = iter->second;
+			ofVec3f* vertex = renderer.GetBaseVertex(i);
+			vertex->x = nb->bodies[vi][0].x + avgx;
+			vertex->y = nb->bodies[vi][0].y + avgy;
+			vertex->z = nb->bodies[vi][0].z + avgz;
+		}
+	}
+}
+
+
+void testApp::InitBodies()
+{
+	isNBInitialized = true;
+	int i;
+	int j;
+	srand(7);
+
+	nbmap.clear();
+	avgx = 0; 
+	avgy = 0; 
+	avgz = 0;
+	double avgvx = 0, avgvy = 0, avgvz = 0;
+	
+	vector<ofIndexType> vertices = renderer.GetValidBaseIndices();
+	int numVertices = vertices.size();
+	int vi = 1;
+	int viMax = N;
+	for(int i = 0; i < numVertices; i++)
+	{
+		if (vi > viMax)
+			break;
+		ofVec3f* currentVertex = renderer.GetBaseVertex(vertices[i]);
+
+		if (currentVertex == NULL)
+			continue;
+		
+		nbmap.insert(Int_Pair(vertices[i], vi));
+			
+		nb->mass[vi] = 3;
+		double ratio = (i / (double)N);
+		double angle = 2 * M_PI * ratio; //(rand() / (RAND_MAX+1.0)) * M_PI * 2;
+		//double radius = (rand() / (RAND_MAX+1.0)) * 14.5 + .5;
+		double vel = 0;//((rand() / (RAND_MAX+1.0)) * .4 + .05 * radius);
+		double velAngle = 0;//((rand() / (RAND_MAX+1.0)) - 0.5) * M_PI / 8;
+		nb->bodies[vi][0].x =  currentVertex->x;
+		nb->bodies[vi][0].y =  currentVertex->y;
+		nb->bodies[vi][0].z =  currentVertex->z;
+		double vx = 0*cos(angle + M_PI / 2.0 + velAngle) * vel;
+		double vy = 0*sin(angle + M_PI / 2.0 + velAngle) * vel;
+		double vz = 0;
+		avgx += currentVertex->x;
+		avgy += currentVertex->y;
+		avgz += currentVertex->z;
+		avgvx += vx;
+		avgvy += vy;
+		avgvz += vz;
+		nb->bodies[vi][0].vx = vx;
+		nb->bodies[vi][0].vy = vy;
+		nb->bodies[vi][0].vz = vz;
+
+		vi++;
+	}
+	for (int i = vi; i <= viMax; i++)
+	{
+		nb->bodies[i][0].isDisabled = true;
+	}
+	avgx /= N;
+	avgy /= N;
+	avgz /= N;
+	avgvx /= N;
+	avgvy /= N;
+	avgvz /= N;
+
+	for (int i = 1; i <= N; i++)
+	{
+		nb->bodies[i][0].x -= avgx;
+		nb->bodies[i][0].y -= avgy;
+		nb->bodies[i][0].z -= avgz;
+		nb->bodies[i][0].vx -= avgvx;
+		nb->bodies[i][0].vy -= avgvy;
+		nb->bodies[i][0].vz -= avgvz;
+	}
+
 }
 
 void testApp::drawGeometry(){
@@ -479,8 +587,8 @@ void testApp::update(){
 		renderer.setSimplification(currentSimplify);
 		renderer.farClip = farClip;
 		renderer.mirror = currentMirror;
-		
 		renderer.update();
+		InitBodies();
 	}
 	
 	//update shaders

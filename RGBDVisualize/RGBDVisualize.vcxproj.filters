@@ -207,6 +207,7 @@
     <ClCompile Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.cpp">
       <Filter>addons\ofxXmlSettings</Filter>
     </ClCompile>
+    <ClCompile Include="src\NBSolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\testApp.h" />
@@ -432,6 +433,9 @@
     <ClInclude Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.h">
       <Filter>addons\ofxXmlSettings</Filter>
     </ClInclude>
+    <ClInclude Include="src\Body.h" />
+    <ClInclude Include="src\Cloud.h" />
+    <ClInclude Include="src\NBSolver.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="addons">

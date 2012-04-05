@@ -1,3 +1,6 @@
+/* NB Solver 
+ * Copyright (c) 2012 Joshua Blake
+ */
 #include "NBSolver.h"
 
 using namespace std;

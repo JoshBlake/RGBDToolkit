@@ -1,3 +1,6 @@
+/* NB Solver 
+ * Copyright (c) 2012 Joshua Blake
+ */
 #pragma once
 
 #pragma unmanaged
@@ -14,7 +17,7 @@
 
 #define isnan(x) ((x) != (x))
 
-/* This program is a Picard-Maclaurin solver for Newton's N Body Problem. 
+/* This class is a Picard-Maclaurin solver for Newton's N Body Problem. 
 The Maclaurin polynomial are determined   from Picard iteration using Cauchy 
 products. The algorithm is at www.math.jmu.edu/~jim/picard.htm.  You are 
 asked to give the number of bodies, N,the mass of each body, the initial 
